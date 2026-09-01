@@ -1,5 +1,5 @@
-#ifndef VEC3_H
-#define VEC3_H
+#ifndef VEC3_H_
+#define VEC3_H_
 
 // Definition of Vector3
 typedef struct {

@@ -35,10 +35,11 @@ int resolveNamedColor(const char *name, Color *result) {
 
     // Prevents buffer overflow
     size_t length = strlen(name);
-    if(length > MAX_COLOR_NAME_LENGTH) {
+    if(length > MAX_COLOR_NAME_LENGTH){
         return 0;
     }
 
+    // Cuts off whitespaces
     size_t start = 0;
     while(start < length && isspace((unsigned char)name[start])){
         start++;

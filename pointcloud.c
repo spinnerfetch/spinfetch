@@ -29,23 +29,28 @@ PointCloud loadPointcloud(const char *path) {
 
     // First line of any SPC file must be "SPC1", if not, it's not an SPC file, therefore raise error
     if(strcmp(line, "SPC1") != 0){
-        fprintf(stderr, "%s is not a valid SPC file", path);
+        fprintf(stderr, "%s is not a valid SPC file\n", path);
         fclose(file);
         exit(EXIT_FAILURE);
     }
 
     // Second line of any SPC file is the count of points in the pointcloud. Gets stored, if invalid raise error
-    fgets(line, sizeof(line), file);
+    if(fgets(line, sizeof(line), file) == NULL){
+        fprintf(stderr, "Missing point count in file %s\n", path);
+        fclose(file);
+        exit(EXIT_FAILURE);
+    }
+
     size_t count;
     if(sscanf(line, "%zu", &count) != 1){
-        fprintf(stderr, "Invalid point count");
+        fprintf(stderr, "Invalid point count\n");
         fclose(file);
         exit(EXIT_FAILURE);
     }
 
     // If no points in cloud raise error
     if(count == 0){
-        fprintf(stderr, "Point cloud in file %s is empty", path);
+        fprintf(stderr, "Point cloud in file %s is empty\n", path);
         fclose(file);
         exit(EXIT_FAILURE);
     }
@@ -53,7 +58,7 @@ PointCloud loadPointcloud(const char *path) {
     // Allocates memory for points, if not raise error
     Point *points = malloc(count * sizeof(Point));
     if(points == 0){
-        fprintf(stderr, "Could not allocate memory to points");
+        fprintf(stderr, "Could not allocate memory to points\n");
         free(points);
         fclose(file);
         exit(EXIT_FAILURE);
@@ -63,7 +68,7 @@ PointCloud loadPointcloud(const char *path) {
     for(size_t pointIndex = 0; pointIndex < count; pointIndex++){
         // If the loop reaches EOF before purported count, raise error
         if(fgets(line, sizeof(line), file) == NULL){
-            fprintf(stderr, "Unexpected end of file %s at point %zu", pointIndex, path);
+            fprintf(stderr, "Unexpected end of file %s at point %zu\n", path, pointIndex);
             free(points);
             fclose(file);
             exit(EXIT_FAILURE);
@@ -76,7 +81,7 @@ PointCloud loadPointcloud(const char *path) {
 
         // Fills the variables to create a Point, if unexpected number of variables raise error
         if(sscanf(line, "%f %f %f %f %f %f %f %f %f", &posX, &posY, &posZ, &normX, &normY, &normZ, &r, &g, &b) != 9){
-            fprintf(stderr, "Point %zu in file %s is invalid", pointIndex, path);
+            fprintf(stderr, "Point %zu in file %s is invalid\n", pointIndex, path);
             free(points);
             fclose(file);
             exit(EXIT_FAILURE);
@@ -102,7 +107,7 @@ PointCloud loadPointcloud(const char *path) {
 void centerPointcloud(PointCloud cloud) {
     // If point cloud has no points raise error
     if(cloud.count == 0) {
-        fprintf(stderr, "Point cloud is empty");
+        fprintf(stderr, "Point cloud is empty\n");
         exit(EXIT_FAILURE);
     }
 
