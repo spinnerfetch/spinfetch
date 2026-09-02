@@ -1,0 +1,142 @@
+.TH SPINFETCH 1 "September 2026" "spinfetch 1.0" "User Commands"
+
+.SH NAME
+spinfetch - displays system information and spins 3D shapes in an ASCII renderer
+
+.SH SYNOPSIS
+.B spinfetch
+.RI [ options ]
+
+.SH DESCRIPTION
+.B spinfetch
+is a small fastfetch/neofetch look-alike that displays useful system information, but also allows the user to spin 3D shapes converted to
+.B .spc
+files (Spinfetch PointCloud) and display them next to the system information using an ASCII renderer.
+
+.SH OPTIONS
+.TP
+.BI --x-rotation " float"
+Sets rotation around the X axis to the given value, in degrees; cumulative with
+.BR --y-rotation
+and
+.BR --z-rotation .
+
+.TP
+.BI --y-rotation " float"
+Sets rotation around the Y axis to the given value, in degrees; cumulative with
+.BR --x-rotation
+and
+.BR --z-rotation .
+
+.TP
+.BI --z-rotation " float"
+Sets rotation around the Z axis to the given value, in degrees; cumulative with
+.BR --x-rotation
+and
+.BR --y-rotation .
+
+.TP
+.BI --display-color " r, g, b"
+Changes the color of the bold characters in the information display. The color can be specified using RGB values or a color name.
+
+.TP
+.BI --change-object " path"
+Changes the current spinning object to the one in the specified path. In normal circumstances, this path should be in the
+.B objects
+directory of
+.BR spinfetch .
+Expects a
+.B .spc
+file. See
+.BR CUSTOM\ OBJECTS
+below for more information. By default, if no absolute path is specified,
+.B spinfetch
+searches the
+.B objects
+directory for the specified
+.B .spc
+file.
+
+.TP
+.BI --set-focal-length " float"
+Changes the focal length of the ASCII renderer to the given value.
+
+.TP
+.BI --set-camera-distance " float"
+Changes the camera distance of the ASCII renderer to the given value.
+
+.TP
+.B --print-config
+Prints the current configuration of the renderer.
+
+.TP
+.B --config-path
+Prints the path of the config file currently in use.
+
+.TP
+.B --ls-objects
+Lists all
+.B .spc
+files in the
+.B objects
+directory. If an object is not there, it will not be printed.
+
+.TP
+.B --objects-path
+Prints the path of the
+.B objects
+directory.
+
+.TP
+.B --reset
+Resets the
+.B spinfetch
+configuration.
+
+.SH CONFIGURATION
+.SS Custom Objects
+.B spinfetch
+uses
+.B .spc
+files to render shapes, called objects, in the terminal. These files contain coordinates of thousands of scattered points that represent a 3D shape, along with their normals and base color.
+
+Any Blender object can be converted into a
+.B .spc
+file using the Blender auxiliary script available at
+.UR https://github.com/spinnerfetch/spinfetch/blob/main/blender_to_spc.py
+.UE .
+Use this code in the Scripting panel of Blender with the object you wish to convert selected, and run it after specifying the desired point count and the path where the file should be saved.
+
+To be most accurate, a higher number of points is recommended depending on the size of the object in Blender. Not using enough points may lead to holes in the rendered object where not enough points were generated in the
+.B .spc
+file, since scattered points are randomly generated.
+
+.B .spc
+files should be located in the
+.B objects
+folder, whose path can be found using:
+
+.EX
+spinfetch --objects-path
+.EE
+
+.B spinfetch
+will work if the specified file is not in that folder, but keeping objects there is recommended so that they can be found easily.
+
+.SS Config Files
+.B spinfetch
+uses custom configuration files that are human-readable. The configuration files contain the X, Y and Z rotation strengths of the renderer, its focal length and camera distance, as well as the display color of the information display and the current object path.
+
+Easier configuration is possible through the command line using the aforementioned commands.
+
+.SH BUGS
+This project will most likely not be maintained any further.
+
+For source code, see
+.UR https://github.com/spinnerfetch/spinfetch
+.UE .
+
+.SH AUTHOR
+.UR https://github.com/spinnerfetch/spinfetch
+https://github.com/spinnerfetch/spinfetch
+.UE
