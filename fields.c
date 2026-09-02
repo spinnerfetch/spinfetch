@@ -34,13 +34,11 @@ static const char *knownWMProcesses[] = {
 
 char *safeRun(const char *cmd) {
     #ifdef _WIN32
-        // Opens pipe for the command, if pipe is null return null
         FILE *pipe = _popen(cmd, "r");
         if (pipe == NULL) {
             return NULL;
         }
 
-        // Allocates memory for the output
         char line[1024];
         size_t capacity = 2048;
         size_t length = 0;
@@ -52,7 +50,6 @@ char *safeRun(const char *cmd) {
         }
         output[0] = '\0';
 
-        // Reads return lines and adds them to outputs
         while(fgets(line, sizeof(line), pipe) != NULL){
             size_t lineLength = strlen(line);
 
@@ -74,7 +71,6 @@ char *safeRun(const char *cmd) {
             output[length] = '\0';
         }
 
-        // If command failed return null
         int status = _pclose(pipe);
         if(status != 0){
             free(output);
@@ -133,25 +129,21 @@ char *safeRun(const char *cmd) {
 
 char *safeRead(const char *path)
 {
-    // Opens file, if file is NULL return NULL
     FILE *file = fopen(path, "r");
     if(file == NULL){
         return NULL;
     }
 
-    // Allocates enough bytes to read the file
     fseek(file, 0, SEEK_END);
     long size = ftell(file);
     fseek(file, 0, SEEK_SET);
     char *contents = malloc(size + 1);
 
-    // If couldn't allocate memory close file and return null
     if(contents == NULL){
         fclose(file);
         return NULL;
     }
 
-    // Tries to fill contents with file and returns it, otherwise return null
     if(fread(contents, 1, size, file) == size){
         contents[size] = '\0';
         fclose(file);
@@ -162,6 +154,7 @@ char *safeRead(const char *path)
         return NULL;
     }
 }
+
 
 char *sendUnknown(void) {
     char *result = malloc(8);

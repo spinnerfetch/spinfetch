@@ -1,37 +1,31 @@
 #include <math.h>
 #include "vec3.h"
 
-// Adds two Vector3's
 Vector3 addVec(Vector3 a, Vector3 b) {
     return (Vector3){a.x + b.x, a.y + b.y, a.z+b.z};
 }
 
 
-// Subtracts two Vector3's
 Vector3 subVec(Vector3 a, Vector3 b) {
     return (Vector3){a.x - b.x, a.y - b.y, a.z - b.z};
 }
 
 
-// Multiplies a Vector3 by a scalar
 Vector3 mulVec(Vector3 v, float scalar) {
     return (Vector3){v.x * scalar, v.y * scalar, v.z * scalar};
 }
 
 
-// Divides a Vector3 by a scalar
 Vector3 divVec(Vector3 v, float scalar) {
     return (Vector3){v.x / scalar, v.y / scalar, v.z / scalar};
 }
 
 
-// Returns the magnitude of a Vector3
 float getVectorLength(Vector3 v) {
     return sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
 }
 
 
-// Calculates the alignment between two Vector3's
 float dotVec(Vector3 a, Vector3 b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
@@ -42,7 +36,6 @@ Vector3 crossVec(Vector3 a, Vector3 b) {
 }
 
 
-// Normalizes a Vector3
 Vector3 normalizeVector(Vector3 v) {
     float length = getVectorLength(v);
     if(length == 0) {
@@ -52,7 +45,6 @@ Vector3 normalizeVector(Vector3 v) {
 } 
 
 
-// Rotates a Vector3 along three angles alpha, beta and gamma
 Vector3 rotatePoint(Vector3 point, float alpha, float beta, float gamma) {
     Vector3 rotatedPoint;
 
