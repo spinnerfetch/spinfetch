@@ -1,7 +1,6 @@
 #ifndef VEC3_H_
 #define VEC3_H_
 
-// Definition of Vector3
 typedef struct {
     float x;
     float y;
@@ -9,14 +8,11 @@ typedef struct {
 } Vector3;
 
 
-// Base math functions with Vector3
 Vector3 addVec(Vector3 a, Vector3 b);
 Vector3 subVec(Vector3 a, Vector3 b);
 Vector3 mulVec(Vector3 v, float scalar);
 Vector3 divVec(Vector3 v, float scalar);
 
-
-// Utilitary functions with Vector3
 float getVectorLength(Vector3 v);
 float dotVec(Vector3 a, Vector3 b);
 Vector3 crossVec(Vector3 a, Vector3 b);

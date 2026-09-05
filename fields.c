@@ -34,13 +34,11 @@ static const char *knownWMProcesses[] = {
 
 char *safeRun(const char *cmd) {
     #ifdef _WIN32
-        // Opens pipe for the command, if pipe is null return null
         FILE *pipe = _popen(cmd, "r");
         if (pipe == NULL) {
             return NULL;
         }
 
-        // Allocates memory for the output
         char line[1024];
         size_t capacity = 2048;
         size_t length = 0;
@@ -52,7 +50,6 @@ char *safeRun(const char *cmd) {
         }
         output[0] = '\0';
 
-        // Reads return lines and adds them to outputs
         while(fgets(line, sizeof(line), pipe) != NULL){
             size_t lineLength = strlen(line);
 
@@ -74,7 +71,6 @@ char *safeRun(const char *cmd) {
             output[length] = '\0';
         }
 
-        // If command failed return null
         int status = _pclose(pipe);
         if(status != 0){
             free(output);
@@ -83,7 +79,7 @@ char *safeRun(const char *cmd) {
 
         return output;
     
-    #else // Same code with Linux/macOS adjustments
+    #else
         FILE *pipe = popen(cmd, "r");
         if (pipe == NULL) {
             return NULL;
@@ -131,37 +127,29 @@ char *safeRun(const char *cmd) {
     #endif
 }
 
-char *safeRead(const char *path)
-{
-    // Opens file, if file is NULL return NULL
+char *safeRead(const char *path) {
     FILE *file = fopen(path, "r");
-    if(file == NULL){
-        return NULL;
-    }
+    if (file == NULL) return NULL;
 
-    // Allocates enough bytes to read the file
-    fseek(file, 0, SEEK_END);
-    long size = ftell(file);
-    fseek(file, 0, SEEK_SET);
-    char *contents = malloc(size + 1);
+    size_t capacity = 4096, length = 0;
+    char *contents = malloc(capacity);
+    if (contents == NULL) { fclose(file); return NULL; }
 
-    // If couldn't allocate memory close file and return null
-    if(contents == NULL){
-        fclose(file);
-        return NULL;
+    size_t n;
+    while ((n = fread(contents + length, 1, capacity - length - 1, file)) > 0) {
+        length += n;
+        if (length + 1 >= capacity) {
+            capacity *= 2;
+            char *tmp = realloc(contents, capacity);
+            if (tmp == NULL) { free(contents); fclose(file); return NULL; }
+            contents = tmp;
+        }
     }
-
-    // Tries to fill contents with file and returns it, otherwise return null
-    if(fread(contents, 1, size, file) == size){
-        contents[size] = '\0';
-        fclose(file);
-        return contents;
-    } else {
-        free(contents);
-        fclose(file);
-        return NULL;
-    }
+    contents[length] = '\0';
+    fclose(file);
+    return contents;
 }
+
 
 char *sendUnknown(void) {
     char *result = malloc(8);
@@ -1076,7 +1064,7 @@ char *getMemoryUsage(void){
             char *totalMemory = strstr(contents, "MemTotal:");
             char *availableMemory = strstr(contents, "MemAvailable:");
 
-            if(total != NULL && avail != NULL){
+            if(totalMemory != NULL && availableMemory != NULL){
                 totalMemory += strlen("MemTotal:");
                 availableMemory += strlen("MemAvailable:");
 

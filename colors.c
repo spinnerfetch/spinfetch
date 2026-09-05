@@ -1,9 +1,7 @@
-#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
 #include "colors.h"
-#include "pointcloud.h"
 
 #define MAX_COLOR_NAME_LENGTH 128
 
@@ -33,13 +31,11 @@ static const NamedColor namedColors[] = {
 int resolveNamedColor(const char *name, Color *result) {
     char normalizedName[MAX_COLOR_NAME_LENGTH + 1];
 
-    // Prevents buffer overflow
     size_t length = strlen(name);
     if(length > MAX_COLOR_NAME_LENGTH){
         return 0;
     }
 
-    // Cuts off whitespaces
     size_t start = 0;
     while(start < length && isspace((unsigned char)name[start])){
         start++;
@@ -49,14 +45,12 @@ int resolveNamedColor(const char *name, Color *result) {
         end--;
     }
 
-    // Makes string lowercase
     size_t normalizedLength = end - start;
     for(size_t i = 0; i < normalizedLength; i++){
         normalizedName[i] = tolower((unsigned char)name[start + i]);
     }
     normalizedName[normalizedLength] = '\0';
 
-    // Checks if string matches one of the named colors
     for(size_t i = 0; i < sizeof(namedColors)/sizeof(namedColors[0]); i++) {
         if(strcmp(normalizedName, namedColors[i].name) == 0) {
             *result = namedColors[i].color;
@@ -64,6 +58,5 @@ int resolveNamedColor(const char *name, Color *result) {
         }
     }
 
-    // If failed return 0
     return 0;
 }
